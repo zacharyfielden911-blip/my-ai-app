@@ -15,7 +15,7 @@ except:
 
 # --- انتخاب مدل ---
 # سرورهای خارجی به همه مدل‌ها دسترسی دارند، اما ما از نسخه مطمئن استفاده می‌کنیم
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-flash-latest')
 
 # --- استایل راست‌چین ---
 st.markdown("""
@@ -57,3 +57,4 @@ if st.session_state.problems:
     st.write("تاریخچه:")
 
     st.dataframe(pd.DataFrame(st.session_state.problems), use_container_width=True)
+

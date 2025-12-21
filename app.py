@@ -2,59 +2,121 @@ import streamlit as st
 import google.generativeai as genai
 import pandas as pd
 
-# --- تنظیمات صفحه ---
-st.set_page_config(page_title="دستیار هوشمند")
+# --- ۱. تنظیمات صفحه ---
+st.set_page_config(page_title="سامانه هوشمند سیاست‌گذاری", page_icon="🏛️", layout="centered")
 
-# --- تنظیمات کلید (مخصوص فضای ابری) ---
-# به جای نوشتن مستقیم کلید، آن را از بخش مخفی (Secrets) می‌خوانیم
-try:
-    api_key = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=api_key)
-except:
-    st.error("کلید API پیدا نشد! لطفاً در تنظیمات Streamlit Cloud وارد کنید.")
-
-# --- انتخاب مدل ---
-# سرورهای خارجی به همه مدل‌ها دسترسی دارند، اما ما از نسخه مطمئن استفاده می‌کنیم
-model = genai.GenerativeModel('gemini-flash-latest')
-
-# --- استایل راست‌چین ---
+# --- ۲. تنظیمات گرافیکی (CSS) ---
 st.markdown("""
 <style>
-    .stApp {
+    /* فراخوانی فونت فارسی وزیر */
+    @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css');
+    
+    html, body, [class*="css"] {
+        font-family: 'Vazir', sans-serif !important;
         direction: rtl;
-        text-align: right;
     }
+    
+    /* رنگ پس‌زمینه */
+    .stApp {
+        background-color: #f8f9fa;
+    }
+    
+    /* تنظیمات تیترها */
+    h1 {
+        color: #1e3a8a; /* آبی نفتی */
+        text-align: center;
+        font-weight: bold;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 30px;
+    }
+    
+    /* استایل دکمه */
+    div.stButton > button {
+        width: 100%;
+        background-color: #2563eb;
+        color: white;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 18px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: 0.3s;
+    }
+    div.stButton > button:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-2px);
+    }
+    
+    /* کادر متن */
     .stTextArea textarea {
-        font-family: 'Tahoma', sans-serif;
-        direction: rtl;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        background-color: white;
+    }
+    
+    /* کادر پاسخ */
+    .stSuccess {
+        background-color: #dcfce7;
+        border-radius: 10px;
+        padding: 15px;
+        border-right: 5px solid #22c55e;
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🌍 دستیار هوشمند (نسخه آنلاین)")
+# --- ۳. تنظیمات هوش مصنوعی ---
+try:
+    api_key = st.secrets["GOOGLE_API_KEY"]
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-flash-latest')
+except Exception as e:
+    st.error("⚠️ خطای اتصال به سرویس گوگل. لطفاً کلید API را بررسی کنید.")
 
-# --- حافظه ---
-if "problems" not in st.session_state:
-    st.session_state.problems = []
+# --- ۴. بدنه اصلی برنامه ---
+st.title("🏛️ سامانه هوشمند سیاست‌گذاری جهرم")
+st.write("لطفاً چالش یا مسئله مورد نظر را وارد کنید تا راهکار هوشمند دریافت نمایید:")
 
-# --- ورودی ---
-desc = st.text_area("مشکل خود را بنویسید:", height=150)
+# حافظه موقت
+if "history" not in st.session_state:
+    st.session_state.history = []
 
-if st.button("دریافت راهکار"):
+# فرم ورودی
+desc = st.text_area("شرح مسئله:", height=150, placeholder="مثال: کمبود بودجه در بخش حمل و نقل عمومی...")
+
+if st.button("🔍 تحلیل و ارائه راهکار"):
     if desc:
         try:
-            with st.spinner('در حال تفکر...'):
-                response = model.generate_content(f"به عنوان مشاور دانا، ۳ راهکار کوتاه و کاربردی برای این مشکل بده: {desc}")
-                st.success("پاسخ:")
-                st.write(response.text)
-                st.session_state.problems.append(desc)
+            with st.spinner('در حال پردازش و تدوین سیاست‌های پیشنهادی...'):
+                # پرامپت حرفه‌ای و رسمی
+                prompt = f"""
+                به عنوان یک مشاور ارشد سیاست‌گذاری عمومی، لطفاً مسئله زیر را تحلیل کنید.
+                
+                مسئله: {desc}
+                
+                لطفاً پاسخ را در قالب ساختار زیر ارائه دهید:
+                ۱. 🎯 **تحلیل ریشه‌ای:** (کوتاه و دقیق)
+                ۲. 💡 **راهکارهای کوتاه‌مدت:** (اجرایی و فوری)
+                ۳. 💎 **راهکارهای بلندمدت:** (استراتژیک)
+                
+                لحن پاسخ: رسمی، مدیریتی و دلسوزانه.
+                """
+                
+                response = model.generate_content(prompt)
+                
+                st.markdown("### 📋 گزارش تحلیل هوشمند")
+                st.success(response.text)
+                
+                # ذخیره در تاریخچه
+                st.session_state.history.append({"مسئله": desc, "زمان": "جدید"})
         except Exception as e:
-            st.error(f"خطا: {e}")
+            st.error(f"خطا در دریافت پاسخ: {e}")
+    else:
+        st.warning("لطفاً ابتدا شرح مسئله را وارد نمایید.")
 
-# --- تاریخچه ---
-if st.session_state.problems:
+# نمایش تاریخچه ساده
+if st.session_state.history:
     st.divider()
-    st.write("تاریخچه:")
-
-    st.dataframe(pd.DataFrame(st.session_state.problems), use_container_width=True)
-
+    with st.expander("📂 مشاهده سوابق جستجوهای این نشست"):
+        df = pd.DataFrame(st.session_state.history)
+        st.table(df)

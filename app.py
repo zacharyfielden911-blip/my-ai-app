@@ -3,7 +3,7 @@ import google.generativeai as genai
 import pandas as pd
 
 # --- تنظیمات صفحه ---
-st.set_page_config(page_title="دستیار هوشمند", direction="rtl")
+st.set_page_config(page_title="دستیار هوشمند")
 
 # --- تنظیمات کلید (مخصوص فضای ابری) ---
 # به جای نوشتن مستقیم کلید، آن را از بخش مخفی (Secrets) می‌خوانیم
@@ -55,4 +55,5 @@ if st.button("دریافت راهکار"):
 if st.session_state.problems:
     st.divider()
     st.write("تاریخچه:")
+
     st.dataframe(pd.DataFrame(st.session_state.problems), use_container_width=True)

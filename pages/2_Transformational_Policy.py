@@ -90,7 +90,7 @@ if 'final_mix' not in st.session_state:
     st.session_state.final_mix = ""
 
 # --- ۴. بدنه اصلی برنامه ---
-st.title("🧬 دستیار سیاست‌گذاری نوآوری تحول‌آفرین جهرمی")
+st.title("🧬 دستیار سیاست‌گذاری جهرمی")
 st.markdown("---")
 
 # --- مرحله ۱: دریافت ورودی‌ها ---

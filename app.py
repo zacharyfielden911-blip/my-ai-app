@@ -5,63 +5,94 @@ import pandas as pd
 # --- ۱. تنظیمات صفحه ---
 st.set_page_config(page_title="سامانه هوشمند سیاست‌گذاری", page_icon="🏛️", layout="centered")
 
-# --- ۲. تنظیمات گرافیکی (CSS) ---
+# --- ۲. تنظیمات گرافیکی (یکپارچه با سایر صفحات - Dark Mode) ---
 st.markdown("""
 <style>
     /* فراخوانی فونت فارسی وزیر */
     @import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css');
     
+    /* تنظیمات کلی صفحه و فونت */
     html, body, [class*="css"] {
         font-family: 'Vazir', sans-serif !important;
         direction: rtl;
     }
     
-    /* رنگ پس‌زمینه */
+    /* ۱. پس‌زمینه اصلی (تیره و یکدست) */
     .stApp {
-        background-color: #f8f9fa;
+        background-color: #0e1117 !important;
+        color: #ffffff !important;
     }
     
-    /* تنظیمات تیترها */
-    h1 {
-        color: #1e3a8a; /* آبی نفتی */
+    /* ۲. تیترها (سفید یخی) */
+    h1, h2, h3 {
+        color: #f0f6fc !important;
         text-align: center;
         font-weight: bold;
         padding-bottom: 20px;
-        border-bottom: 2px solid #e5e7eb;
+        border-bottom: 2px solid #30363d !important;
         margin-bottom: 30px;
     }
     
-    /* استایل دکمه */
+    /* ۳. متن‌های معمولی */
+    p, label, .stMarkdown {
+        color: #e6edf3 !important;
+    }
+
+    /* ۴. استایل دکمه‌ها (سبز پررنگ و مشخص) */
     div.stButton > button {
         width: 100%;
-        background-color: #2563eb;
-        color: white;
-        border-radius: 10px;
+        background-color: #238636 !important;
+        color: white !important;
+        border-radius: 8px;
         padding: 10px;
         font-size: 18px;
-        border: none;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border: 1px solid #2ea043 !important;
         transition: 0.3s;
     }
     div.stButton > button:hover {
-        background-color: #1d4ed8;
+        background-color: #2ea043 !important;
+        box-shadow: 0 0 10px rgba(46, 160, 67, 0.5);
         transform: translateY(-2px);
     }
     
-    /* کادر متن */
+    /* ۵. کادر متن (تیره با حاشیه روشن) */
     .stTextArea textarea {
+        background-color: #161b22 !important;
+        color: #ffffff !important;
+        border: 1px solid #7d8590 !important;
         border-radius: 10px;
-        border: 1px solid #d1d5db;
-        background-color: white;
+    }
+    .stTextArea textarea:focus {
+        border-color: #238636 !important;
+        box-shadow: 0 0 0 1px #238636 !important;
     }
     
-    /* کادر پاسخ */
-    .stSuccess {
-        background-color: #dcfce7;
+    /* ۶. کادر پاسخ و پیام‌ها (Success/Error) */
+    .stSuccess, .stInfo, .stWarning, .stError {
+        background-color: #161b22 !important;
+        color: #ffffff !important;
         border-radius: 10px;
         padding: 15px;
-        border-right: 5px solid #22c55e;
+        border: 1px solid #30363d !important;
     }
+    /* خط رنگی کنار کادر ساکسس */
+    .stSuccess {
+        border-right: 5px solid #238636 !important;
+    }
+    
+    /* ۷. استایل جداول (History) */
+    div[data-testid="stTable"] {
+        color: white !important;
+    }
+    th {
+        background-color: #21262d !important;
+        color: white !important;
+    }
+    td {
+        background-color: #0e1117 !important;
+        color: #e6edf3 !important;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -96,29 +127,4 @@ if st.button("🔍 تحلیل و ارائه راهکار"):
                 
                 لطفاً پاسخ را در قالب ساختار زیر ارائه دهید:
                 ۱. 🎯 **تحلیل ریشه‌ای:** (کوتاه و دقیق)
-                ۲. 💡 **راهکارهای کوتاه‌مدت:** (اجرایی و فوری)
-                ۳. 💎 **راهکارهای بلندمدت:** (استراتژیک)
-                
-                لحن پاسخ: رسمی، مدیریتی و دلسوزانه.
-                """
-                
-                response = model.generate_content(prompt)
-                
-                st.markdown("### 📋 گزارش تحلیل هوشمند")
-                st.success(response.text)
-                
-                # ذخیره در تاریخچه
-                st.session_state.history.append({"مسئله": desc, "زمان": "جدید"})
-        except Exception as e:
-            st.error(f"خطا در دریافت پاسخ: {e}")
-    else:
-        st.warning("لطفاً ابتدا شرح مسئله را وارد نمایید.")
-
-# نمایش تاریخچه ساده
-if st.session_state.history:
-    st.divider()
-    with st.expander("📂 مشاهده سوابق جستجوهای این نشست"):
-        df = pd.DataFrame(st.session_state.history)
-        st.table(df)
-
-
+                ۲

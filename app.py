@@ -100,7 +100,7 @@ st.markdown("""
 try:
     api_key = st.secrets["GOOGLE_API_KEY"]
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-flash-latest')
+    model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
     st.error("⚠️ خطای اتصال به سرویس گوگل. لطفاً کلید API را بررسی کنید.")
 
@@ -153,3 +153,4 @@ if st.session_state.history:
     with st.expander("📂 مشاهده سوابق جستجوهای این نشست"):
         df = pd.DataFrame(st.session_state.history)
         st.table(df)
+
